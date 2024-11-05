@@ -1,48 +1,34 @@
 #!/usr/bin/env python3
-"""
- Basic flask application module
-"""
-from flask import Flask
-from flask import request
-from flask import render_template
+"""l implement a way to force a particular locale """
+
+
+from flask import Flask, render_template, request
 from flask_babel import Babel
 
 
-class Config(object):
-    """
-    configuration class
-    """
-    LANGUAGES = ['en', 'fr']
-    BABEL_DEFAULT_LOCALE = 'en'
-    BABEL_DEFAULT_TIMEZONE = 'UTC'
-
-
-# Instantiate the application object
 app = Flask(__name__)
-app.config.from_object(Config)
-
-# Wrap the application with Babel
 babel = Babel(app)
 
 
+SUPPORTED_LANGUAGES = ['en', 'fr']
+
+
 @babel.localeselector
-def get_locale() -> str:
-    """
-    request 
-    """
-    locale = request.args.get('locale', '').strip()
-    if locale and locale in Config.LANGUAGES:
-        return locale
-    return request.accept_languages.best_match(app.config['LANGUAGES'])
+def get_locale():
+    """main local"""
+    if 'locale' in request.args:
+        locale = request.args.get('locale')
+
+        if locale in SUPPORTED_LANGUAGES:
+            return locale
+
+    return request.accept_languages.best_match(SUPPORTED_LANGUAGES)
 
 
-@app.route('/', strict_slashes=False)
-def index() -> str:
-    """
-    html template
-    """
+@app.route('/')
+def index():
     return render_template('4-index.html')
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
