@@ -16,7 +16,6 @@ class MRUCache(BaseCaching):
 
     def put(self, key, item):
         """Add an item in the cache.
-        
         If the cache exceeds the MAX_ITEMS, it discards the most
         recently used item.
         """
@@ -24,7 +23,7 @@ class MRUCache(BaseCaching):
             return
 
         if key in self.cache_data:
-            # Move the key to the end of the MRU order to mark it as recently used
+            # Move the key to the MRU order to mark it as recently used
             self.mru_order.remove(key)
         elif len(self.cache_data) >= BaseCaching.MAX_ITEMS:
             # If cache is full, remove the most recently used item
@@ -37,7 +36,7 @@ class MRUCache(BaseCaching):
         self.mru_order.append(key)
 
     def get(self, key):
-        """Get an item by key. If the key exists, it is marked as recently used."""
+        """Get an item by key. If the key exists, it is marked as recently"""
         if key is None or key not in self.cache_data:
             return None
 
@@ -45,4 +44,3 @@ class MRUCache(BaseCaching):
         self.mru_order.remove(key)
         self.mru_order.append(key)
         return self.cache_data[key]
-
